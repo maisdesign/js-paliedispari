@@ -1,58 +1,65 @@
-// Funzione check palindromo
-//Chiedere all’utente di inserire una parola
-//Creare una funzione per capire se la parola inserita è palindroma
-// Prima del check trasformare la parola in minuscolo e rimuovere gli spazi vuoti
-function isPalindrome(word) {
-    // Confrontare la parola con la sua versione invertita
-    word = word.toLowerCase().replace(/\s+/g, '');
-    const reversedWord = word.split('').reverse().join('');
-    return word === reversedWord;
-}
-const userInput = prompt("Inserisci una parola:");
-if (userInput) {
-    if (isPalindrome(userInput)) {
-        console.log(`La parola "${userInput}" è palindroma.`);
-        alert(`La parola "${userInput}" è palindroma.`);
-    } else {
-        console.log(`La parola "${userInput}" non è palindroma.`);
-        alert(`La parola "${userInput}" non è palindroma.`);
+document.addEventListener("DOMContentLoaded", () => {
+    /** Zona Pari o Dispari */
+    const userChoiceEl = document.getElementById("userChoice");//qui l'utente sceglie pari o dispari
+    const userNumberEl = document.getElementById("userNumber");//qui l'utente inserisce un numero da 1 a 5
+    const playButtonEl = document.getElementById("playButton");//qui l'utente clicca per giocare
+    const resultEl = document.getElementById("result");//qui viene mostrato il risultato della partita
+    // Ora il browser deve generare un numero random da 1 a 5 per il computer e sommarlo al numero scelto dall'utente.
+    // Bisogna stabilire se la somma dei due numeri è pari o dispari e dichiarare chi ha vinto in base alla scelta iniziale dell'utente.
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-} else {
-    console.log("Nessuna parola inserita.");
-}
+    playButtonEl.addEventListener("click", () => { // al click del bottone "gioca"
+        const userChoice = userChoiceEl.value; // "pari" o "dispari"
+        const userNumber = parseInt(userNumberEl.value);  // numero scelto dall'utente
+        let winner;
+        if (userNumber < 1 || userNumber > 5 || isNaN(userNumber)) { //controllo base validità numero utente
+            resultEl.textContent = "Per favore, inserisci un numero valido tra 1 e 5.";
+            return;
+        } else {
+            const computerNumber = getRandomNumber(1, 5); // numero random del computer
+            const sum = userNumber + computerNumber; // somma dei due numeri
+            const isSumEven = sum % 2 === 0; // verifica se la somma è pari
+            if ((isSumEven && userChoice === "pari") || (!isSumEven && userChoice === "dispari")) {
+                winner = "Utente vince!";
+            } else {
+                winner = "Computer vince!";
+            }
+            resultEl.textContent = `Numero utente: ${userNumber}, Numero computer: ${computerNumber}, Somma: ${sum} (${isSumEven ? "pari" : "dispari"}). ${winner}`;//versione sintetica della stringa di risultato
+        }
+    });
 
-// Gioco Pari e Dispari
-/*
-*   L’utente sceglie pari o dispari e inserisce un numero da 1 a 5.
-*   Generiamo un numero random (sempre da 1 a 5) per il computer (usando una funzione).
-*   Sommiamo i due numeri
-*   Stabiliamo se la somma dei due numeri è pari o dispari (usando una funzione)
-*   Dichiariamo chi ha vinto.
-*/
-function getRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-function isEven(number) {
-    return number % 2 === 0;
-}
-const userChoice = prompt("Scegli 'pari' o 'dispari':").toLowerCase();
-const userNumber = parseInt(prompt("Inserisci un numero da 1 a 5:"));
-if ((userChoice === 'pari' || userChoice === 'dispari') && userNumber >= 1 && userNumber <= 5) {
-    const computerNumber = getRandomNumber(1, 5);
-    const sum = userNumber + computerNumber;
-    const sumIsEven = isEven(sum);
-    console.log(`Hai scelto: ${userChoice}`);
-    console.log(`Il tuo numero: ${userNumber}`);
-    console.log(`Numero del computer: ${computerNumber}`);
-    console.log(`Somma: ${sum} (${sumIsEven ? 'pari' : 'dispari'})`);
-    if ((sumIsEven && userChoice === 'pari') || (!sumIsEven && userChoice === 'dispari')) {
-        console.log("Hai vinto!");
-        alert("Hai vinto! Perché la somma è " + (sumIsEven ? "pari." : "dispari."));
-    } else {
-        console.log("Ha vinto il computer!");
-        alert("Ha vinto il computer! Perché la somma è " + (sumIsEven ? "pari." : "dispari."));
+    /** Zona Palindromi */
+    const palindromeInputEl = document.getElementById("palindromeInput");//qui l'utente inserisce una parola da verificare
+    const checkPalindromeButtonEl = document.getElementById("checkPalindromeButton");//qui l'utente clicca per verificare se la parola è palindroma
+    const palindromeResultEl = document.getElementById("palindromeResult");//qui viene mostrato il risultato della verifica
+    function isPalindrome(str) {
+        const cleanedStr = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();//rimuove spazi e punteggiatura, converte in minuscolo
+        const reversedStr = cleanedStr.split('').reverse().join('');
+        return cleanedStr === reversedStr;
     }
-} else {
-    console.log("Scelta non valida. Ricarica la pagina e riprova.");
-    alert("Scelta non valida. Ricarica la pagina e riprova.");
-}
+    checkPalindromeButtonEl.addEventListener("click", () => {
+        const userInput = palindromeInputEl.value.trim();
+        if (userInput.length === 0) {
+            palindromeResultEl.textContent = "Per favore, inserisci una parola valida.";
+            return;
+        } else {
+            const result = isPalindrome(userInput);
+            palindromeResultEl.textContent = result ? `"${userInput}" è un palindromo.` : `"${userInput}" non è un palindromo.`;//versione sintetica if/else
+        }
+
+    });
+
+    // Per debug: mostrare gli elementi selezionati nella console
+
+
+    console.log({
+        userChoiceEl,
+        userNumberEl,
+        playButtonEl,
+        resultEl,
+        palindromeInputEl,
+        checkPalindromeButtonEl,
+        palindromeResultEl
+    });
+});
